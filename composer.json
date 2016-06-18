@@ -1,0 +1,24 @@
+{
+    "name": "code_education/doctrine",
+    "description": "Trilhando com o Doctrine",
+    "authors": [
+        {
+            "name": "Yuri Calabrez",
+            "email": "yuri.calabrez@gmail.com"
+        }
+    ],
+    "require": {
+        "silex/silex": "^2.0",
+        "twig/twig": "^1.24",
+        "symfony/twig-bridge": "^3.1",
+        "doctrine/orm": "^2.5"
+    },
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "autoload": {
+        "psr-4": {
+            "Code\\Sistema\\": "src/Code/Sistema"
+        }
+    }
+}
