@@ -2,27 +2,45 @@
 
 require __DIR__ . '/../bootstrap.php';
 
-use Code\Sistema\Entity\Cliente;
-use Code\Sistema\Mapper\ClienteMapper;
 use Code\Sistema\Service\ClienteService;
 
 use Symfony\Component\HttpFoundation\Request;
 
 $app['clienteService'] = function () use ($em) {
-    $clienteEntity = new Cliente();
-    $clienteMapper = new ClienteMapper($em);
-    $clienteService = new ClienteService($clienteEntity, $clienteMapper);
+    $clienteService = new ClienteService($em);
 
     return $clienteService;
 };
 
+//Busca
+$app->get('/api/clientes/search/{name}', function($name) use ($app){
+   $result = $app['clienteService']->searchByName($name);
+
+   return $app->json($result);
+});
+
+//Pagiação
+$app->get('/api/clientes/page/{page}', function($page) use ($app){
+    $result = $app['clienteService']->paginate($page, 5);
+
+    return $app->json($result);
+});
+
 $app->post('/api/clientes', function (Request $request) use ($app) {
     $dados['nome'] = $request->get('nome');
     $dados['email'] = $request->get('email');
+    $dados['rg'] = $request->get('rg');
+    $dados['cpf'] = $request->get('cpf');
 
     $result = $app['clienteService']->insert($dados);
 
-    return $app->json($result);
+    $data['id'] = $result->getId();
+    $data['nome'] = $result->getNome();
+    $data['email'] = $result->getEmail();
+    $data['rg'] = $result->getProfile()->getRg();
+    $data['cpf'] = $result->getProfile()->getCpf();
+
+    return $app->json($data);
 });
 
 $app->post('/api/clientes/{id}', function($id, Request $request) use ($app){
